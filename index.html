@@ -264,24 +264,46 @@
 <script>
 // ===== DATA =====
 const DEFAULT_CONTACTS = [
+  // VENDEURS
   { id: uid(), nom: "Trefor Murphy", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Seagate T3 U1008 – 2BR", suivi: "", notes: "Vendeur Seagate Tower 3, unité 1008. Contact direct.", alert: false },
   { id: uid(), nom: "Mayank Dave", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Seagate U1406 – 2BR", suivi: "", notes: "Vendeur Seagate unité 1406.", alert: false },
   { id: uid(), nom: "Daosheng", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Seagate + Elie Saab AR3 Villa", suivi: "", notes: "Vendeur multi-biens : Seagate + villa Elie Saab AR3.", alert: false },
   { id: uid(), nom: "Abdul / Vikas", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Seagate – unité à confirmer", suivi: "", notes: "Vendeurs Seagate. Contacter pour confirmer unité exacte.", alert: false },
-  { id: uid(), nom: "Hassan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Binghatti Royale JVC U2306 + U2401 / Parkside 2 Dubai South", suivi: "", notes: "Vendeur : 2 unités Binghatti Royale JVC + villa Parkside 2 Dubai South. Listings actifs.", alert: false },
-  { id: uid(), nom: "Guillaume Merlin", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Dubai Hills Estate – Villa", suivi: "", notes: "Villa Dubai Hills Estate. Pipeline actif.", alert: false },
-  { id: uid(), nom: "Sanjeev Ranjan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Beach Isle T1 U1703 – 2BR 103m² (achat 2.84M juin 2024)", suivi: "", notes: "Vendeur motivé. Basé à Sharjah. Géré via agent Sophy (Beach isle 1703 - 2BR Sophy). Bien acheté 2.84M en juin 2024.", alert: false },
-  { id: uid(), nom: "Sumit Kumar ⚠️", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Condor Marina Star + Apex JVC bulk (10 unités)", suivi: "", notes: "⚠️ APPROCHE AVEC EMPATHIE avant business. Problèmes de santé (cardiaque, rénal, cervical) depuis fév 2026. Basé à Oman. Vendeur motivé Condor Marina Star. Cherche aussi distress deals Palm/Creek (critères stricts). Bulk Apex JVC : 10 unités 1BR, max 1,000 AED/sqft, exit target 1.25M+20%.", alert: true },
-  { id: uid(), nom: "Carine Le Garrec", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Budget 8M AED – Marina Vista 3401 (closing effectué 4.5M)", suivi: "", notes: "Air France. Closing réalisé sur Marina Vista 3401 à 4.5M AED. Reste budget pour autre acquisition. Contact post-closing à entretenir.", alert: false },
+  { id: uid(), nom: "Hassan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Binghatti Royale JVC U2306 + U2401 / Parkside 2 Dubai South 3BR 2.5M", suivi: "", notes: "Vendeur : 2 unités Binghatti Royale JVC + villa Parkside 2 Dubai South 3BR 2.5M. Listings actifs.", alert: false },
+  { id: uid(), nom: "Guillaume Merlin", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "DHE Fairways – Villa 6BR 65M AED off-market", suivi: "", notes: "Villa Dubai Hills Estate Fairways 6BR, 65M AED, off-market. Préparation outreach Monaco.", alert: false },
+  { id: uid(), nom: "Sanjeev Ranjan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Beach Isle T1 U1703 – 2BR 103m² (achat 2.84M juin 2024)", suivi: "", notes: "Vendeur motivé. Basé à Sharjah. Contact via agent Sophy (Beach isle 1703 - 2BR Sophy). Acheté 2.84M juin 2024.", alert: false },
+  { id: uid(), nom: "Sumit Kumar", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Condor Marina Star + Apex JVC bulk (10 unités 1BR)", suivi: "", notes: "APPROCHE AVEC EMPATHIE avant business. Santé : cardiaque, rénal, cervical depuis fév 2026. Basé à Oman. Vendeur motivé Condor Marina Star. Bulk Apex JVC : 10 unités 1BR, max 1,000 AED/sqft, exit 1.25M+20%.", alert: true },
+  { id: uid(), nom: "Kinda", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Beach Mansion T1 U1701 – landlord / amie", suivi: "", notes: "Amie et landlord. Beach Mansion Tower 1 unité 1701.", alert: false },
+  { id: uid(), nom: "Farooq Rashid Pervez", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Marina Vista 2 – 4 unités propriétaire", suivi: "", notes: "Investisseur privé, 4 unités à Marina Vista 2. Potentiellement vendeur si bonne offre. Appeler Mr. Farooq.", alert: false },
+  { id: uid(), nom: "Janam", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Beach Mansion U1303 – 2BR 7M AED assignment off-plan", suivi: "", notes: "Vendeur Beach Mansion unité 1303, 2BR, vue Marina, 7M AED, assignment off-plan. Handover Q3 2026.", alert: false },
+  { id: uid(), nom: "Vendor Warehouse DIC", cat: "vendeur", prio: "normale", tel: "+971556275697", email: "", bien: "Warehouse Dubai Industrial City – 22.5M AED, ROI 9.07%", suivi: "", notes: "Warehouse DIC. 22.5M AED. 60,000 sqft bâti / 110,000 sqft terrain. 2 warehouses loués. ROI net 9.07%. Bail jusqu'en déc 2044.", alert: false },
+  { id: uid(), nom: "Sreejith Thornberry", cat: "agent", prio: "normale", tel: "+971564598859", email: "", bien: "Warehouse DIP1 – 160M AED, ROI 8.09%", suivi: "", notes: "Contact groupe DistressOnly_7. Warehouse DIP1 : 160M AED, 380,000 sqft, loué, yield 8.09%.", alert: false },
+  { id: uid(), nom: "Vendor Warehouse JAFZA", cat: "vendeur", prio: "normale", tel: "+971585951195", email: "", bien: "Warehouse JAFZA South – 18M AED, loué", suivi: "", notes: "Warehouse JAFZA South. 18M AED. 55,125 sqft. Loué. Revenu locatif 2.1M AED/an.", alert: false },
+  // ACHETEURS
+  { id: uid(), nom: "Carine Le Garrec", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Budget 8M AED – Marina Vista 3401 closing 4.5M effectué", suivi: "", notes: "Air France. Closing réalisé Marina Vista 3401 à 4.5M AED. Reste budget pour autre acquisition. Entretenir relation post-closing.", alert: false },
+  { id: uid(), nom: "Caro et Hervé", cat: "acheteur", prio: "haute", tel: "", email: "", bien: "Creek off-plan 2BR waterfront – budget ~3M AED", suivi: "", notes: "Couple FR. Cherche 2BR off-plan waterfront Creek Harbour ou Palm. Options présentées : Creek Haven 2.67M, Creek Bay 3.26M, Palm Jebel Ali, Gardenia Bay Abu Dhabi.", alert: false },
   { id: uid(), nom: "Alessio", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Beach Isle / Beach Mansion – 1BR, budget ~3M AED", suivi: "", notes: "Cherche 1BR Beach Isle ou Beach Mansion. Budget environ 3M AED.", alert: false },
-  { id: uid(), nom: "Majka", cat: "acheteur", prio: "haute", tel: "", email: "", bien: "Palm Shoreline F/D-type – off-market uniquement", suivi: "", notes: "Cherche Palm Shoreline type F ou D. Off-market UNIQUEMENT. Ne pas proposer de biens en publicité.", alert: false },
-  { id: uid(), nom: "Konstantin", cat: "acheteur", prio: "froid", tel: "", email: "", bien: "Ellington House DHE – 2BR, mortgage buyer", suivi: "", notes: "Voisin Beach Isle P406. Parti de Dubaï en mai. Dossier en attente. Acheteur mortgage, cible Ellington House 2BR DHE.", alert: false },
-  { id: uid(), nom: "Laura", cat: "prospect", prio: "haute", tel: "+41798602224", email: "", bien: "Club Place B1007 / Abu Dhabi TH 3–4M AED", suivi: "", notes: "Rappel début mai. Visite promoteur ~22–23 mai Dubaï. Intérêt Club Place B1007 + townhouse Abu Dhabi budget 3-4M.", alert: false },
-  { id: uid(), nom: "Guylain", cat: "prospect", prio: "normale", tel: "+33608969030", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. À recontacter et qualifier.", alert: false },
-  { id: uid(), nom: "Hugo / Carina", cat: "prospect", prio: "normale", tel: "+33664465511", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. À recontacter et qualifier.", alert: false },
+  { id: uid(), nom: "Majka", cat: "acheteur", prio: "haute", tel: "", email: "", bien: "Palm Shoreline F/D-type – off-market uniquement", suivi: "", notes: "Cherche Palm Shoreline type F ou D. OFF-MARKET UNIQUEMENT. Ne jamais proposer biens en publicité.", alert: false },
+  { id: uid(), nom: "Konstantin", cat: "acheteur", prio: "froid", tel: "", email: "", bien: "Ellington House DHE – 2BR, mortgage buyer", suivi: "", notes: "Voisin Beach Isle P406. Parti de Dubaï en mai 2025. Acheteur mortgage, cible Ellington House 2BR DHE.", alert: false },
+  { id: uid(), nom: "Myriam", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Studio investissement ~800K AED / 200K€", suivi: "", notes: "Investisseuse française. Budget ~200K€ / 800K AED. Intérêt Samana Boulevard Heights studio.", alert: false },
+  { id: uid(), nom: "David (HelloMonaco)", cat: "prospect", prio: "normale", tel: "", email: "", bien: "City of Arabia / Azizi Venice – à qualifier", suivi: "", notes: "Contact via HelloMonaco. Intéressé City of Arabia / Azizi Venice. À recontacter avec nouvelles options.", alert: false },
+  // PROSPECTS
+  { id: uid(), nom: "Laura", cat: "prospect", prio: "haute", tel: "+41798602224", email: "", bien: "Club Place B1007 / Abu Dhabi TH 3–4M AED", suivi: "2026-05-01", notes: "Rappel début mai. Visite promoteur ~22–23 mai Dubai. Club Place B1007 + townhouse Abu Dhabi budget 3-4M.", alert: false },
+  { id: uid(), nom: "Guylain", cat: "prospect", prio: "normale", tel: "+33608969030", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. Via Dina. À recontacter et qualifier.", alert: false },
+  { id: uid(), nom: "Hugo / Carina", cat: "prospect", prio: "normale", tel: "+33664465511", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. Via Dina. À recontacter et qualifier.", alert: false },
   { id: uid(), nom: "Adam", cat: "prospect", prio: "normale", tel: "+33615242707", email: "", bien: "Budget ~2.1M AED via Dina", suivi: "", notes: "Prospect France. Budget 2.1M AED environ. Lead via Dina.", alert: false },
-  { id: uid(), nom: "Carine Fergati", cat: "locataire", prio: "haute", tel: "+33686077830", email: "", bien: "3BR AR3 / Villanova – max 150K AED/an, arrivée août", suivi: "", notes: "Recontacter avril/mai. Cherche 3BR AR3 ou Villanova, max 150K AED/an. Arrivée août. École Georges Pompidou. Lead via Rachid Dadi.", alert: false },
-  { id: uid(), nom: "Elie Yves Cohen", cat: "locataire", prio: "normale", tel: "+212722149950", email: "", bien: "Dubai Marina 1BR meublé – sous-location/Airbnb, ~85K AED/an", suivi: "", notes: "ELY&CO MAROC. Présent 6 mois/an à Dubaï. Cherche 1BR meublé Dubai Marina ou Business Bay avec droits sous-location / Airbnb. Budget ~85K AED/an.", alert: false },
+  { id: uid(), nom: "Vince", cat: "prospect", prio: "froid", tel: "", email: "", bien: "À qualifier – investisseur", suivi: "", notes: "Contact forum. Investisseur potentiel. À qualifier et relancer.", alert: false },
+  { id: uid(), nom: "Alex Monaco", cat: "agent", prio: "normale", tel: "", email: "", bien: "Prescripteur Monaco – Palm Jebel Ali / Grand Polo", suivi: "", notes: "Agent immobilier Monaco. Prescripteur. Positif sur Palm Jebel Ali et Grand Polo. À alimenter avec nouveaux projets.", alert: false },
+  { id: uid(), nom: "Romy", cat: "prospect", prio: "normale", tel: "", email: "", bien: "Studio investissement Dubai", suivi: "", notes: "Dentiste. Prospect investissement studio Dubai. À qualifier.", alert: false },
+  { id: uid(), nom: "Mirwais", cat: "prospect", prio: "normale", tel: "+33780139107", email: "", bien: "À qualifier – lead Google Ads", suivi: "", notes: "Lead Google Ads. Premier contact à effectuer.", alert: false },
+  // LOCATAIRES
+  { id: uid(), nom: "Carine Fergati", cat: "locataire", prio: "haute", tel: "+33686077830", email: "", bien: "3BR AR3 / Villanova – max 150K AED/an, arrivée août", suivi: "2026-05-01", notes: "Recontacter avril/mai. 3BR AR3 ou Villanova, max 150K AED/an. Arrivée août. École Georges Pompidou. Via Rachid Dadi.", alert: false },
+  { id: uid(), nom: "Andy", cat: "locataire", prio: "normale", tel: "", email: "", bien: "Beach Mansion – location", suivi: "", notes: "Locataire Beach Mansion. À recontacter pour suivi.", alert: false },
+  { id: uid(), nom: "Elie Yves Cohen", cat: "locataire", prio: "normale", tel: "+212722149950", email: "", bien: "Dubai Marina 1BR meublé – sous-location/Airbnb, ~85K AED/an", suivi: "", notes: "ELY&CO MAROC. Présent 6 mois/an. 1BR meublé Dubai Marina ou Business Bay, droits sous-location/Airbnb. Budget ~85K AED/an.", alert: false },
+  // CONTACTS PRO
+  { id: uid(), nom: "Max Renout", cat: "agent", prio: "normale", tel: "", email: "", bien: "PropLoop – co-fondateur 50/50", suivi: "", notes: "Co-fondateur PropLoop.ae. Partenariat 50/50. Meydan Free Zone incorporation en cours.", alert: false },
+  { id: uid(), nom: "Dina", cat: "agent", prio: "normale", tel: "", email: "", bien: "Prescriptrice – leads FR", suivi: "", notes: "Prescriptrice. A apporté Guylain, Hugo/Carina, Adam.", alert: false },
+  { id: uid(), nom: "Romain", cat: "agent", prio: "normale", tel: "", email: "", bien: "Prescripteur", suivi: "", notes: "Prescripteur actif.", alert: false },
 ];
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
@@ -528,13 +550,15 @@ function deleteContact(id) {
 }
 
 // ===== IMPORT =====
-function importDefaults() {
+async function importDefaults() {
   contacts = JSON.parse(JSON.stringify(DEFAULT_CONTACTS)).map(c => ({...c, id: uid()}));
   save();
   renderList();
-  showAlert('18 contacts importés !');
+  showAlert('Import en cours...');
+  for (const c of contacts) { await sbSave(c); }
+  showAlert(contacts.length + ' contacts importés !');
 }
-function confirmImport() {
+async function confirmImport() {
   if(contacts.length > 0 && !confirm('Cela ajoutera les contacts par défaut à vos contacts existants. Continuer ?')) return;
   const existing = new Set(contacts.map(c=>c.nom));
   const toAdd = DEFAULT_CONTACTS.filter(c=>!existing.has(c.nom)).map(c=>({...c, id:uid()}));
@@ -542,7 +566,9 @@ function confirmImport() {
   save();
   closeSettings();
   renderList();
-  showAlert(`${toAdd.length} contacts importés`);
+  showAlert('Import en cours...');
+  for (const c of toAdd) { await sbSave(c); }
+  showAlert(`${toAdd.length} contacts importés et sauvegardés`);
 }
 function confirmClear() {
   if(!confirm('⚠️ Effacer TOUS les contacts ? Cette action est irréversible.')) return;
