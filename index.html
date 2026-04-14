@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KdC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --surface: #FFFFFF;
+    --surface2: #EFEFEF;
+    --border: #DEDEDE;
+    --text: #111111;
+    --text2: #555555;
+    --text3: #999999;
+    --accent: #111111;
+    --accent2: #333333;
+    --accent-light: #E8E8E8;
+    --gold: #333333;
+    --gold-light: #EEEEEE;
+    --red: #111111;
+    --red-light: #EEEEEE;
+    --blue: #111111;
+    --blue-light: #EEEEEE;
+    --orange: #333333;
+    --orange-light: #EEEEEE;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--accent); padding: 16px 20px 12px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .header-title { font-family: 'DM Serif Display', serif; color: white; font-size: 22px; letter-spacing: -0.3px; }
+  .header-subtitle { color: rgba(255,255,255,0.55); font-size: 11px; font-weight: 400; margin-top: 1px; }
+  .btn-add { background: var(--gold); color: white; border: none; border-radius: 50px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .search-bar { position: relative; }
+  .search-bar input { width: 100%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; padding: 9px 12px 9px 36px; color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.45); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+
+  /* FILTERS */
+  .filters { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 12px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-btn { padding: 12px 14px; font-size: 12px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .filter-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+  /* STATS BAR */
+  .stats-bar { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; }
+  .stats-bar::-webkit-scrollbar { display: none; }
+  .stat-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 50px; padding: 6px 12px; font-size: 11px; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+  .stat-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* CONTACT LIST */
+  .contact-list { padding: 8px 16px 100px; display: flex; flex-direction: column; gap: 8px; }
+  .contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+  .contact-card:active { transform: scale(0.99); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-property { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .card-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 50px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); }
+  .badge-vendeur { background: var(--surface2); color: var(--text); }
+  .badge-acheteur { background: var(--surface2); color: var(--text); }
+  .badge-locataire { background: var(--surface2); color: var(--text); }
+  .badge-agent { background: var(--surface2); color: var(--text); }
+  .badge-prospect { background: var(--surface2); color: var(--text); }
+  .badge-haute { background: var(--text); color: white; border-color: var(--text); }
+  .badge-normale { background: var(--surface2); color: var(--text2); }
+  .badge-froid { background: var(--surface2); color: var(--text3); }
+  .card-followup { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  .card-followup.urgent { color: var(--red); font-weight: 500; }
+  .card-note-preview { font-size: 12px; color: var(--text2); margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+  /* QUICK ACTIONS (swipe feel) */
+  .card-actions { display: flex; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .card-action-btn { flex: 1; padding: 7px; border-radius: 8px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); background: var(--bg); color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; text-decoration: none; font-family: 'DM Sans', sans-serif; }
+  .card-action-btn.wa { background: var(--surface2); border-color: var(--border); color: var(--text); }
+  .card-action-btn.call { background: var(--surface2); border-color: var(--border); color: var(--text); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-end; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-height: 92vh; overflow-y: auto; padding: 0 0 40px; }
+  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+  .modal-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-title { font-size: 17px; font-weight: 600; }
+  .modal-close { background: var(--surface2); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal-body { padding: 20px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .detail-value { font-size: 15px; color: var(--text); }
+  .detail-note { font-size: 14px; color: var(--text); line-height: 1.6; background: var(--surface2); border-radius: 8px; padding: 12px; }
+  .action-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .action-big { flex: 1; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .action-big.wa { background: var(--text); color: white; }
+  .action-big.call { background: var(--accent2); color: white; }
+  .action-big.edit { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .action-big.del { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+  /* FORM */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
+  .form-input, .form-select, .form-textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent2); }
+  .form-textarea { min-height: 90px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn-save { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+  .btn-cancel { width: 100%; padding: 12px; background: none; color: var(--text2); border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; margin-top: 6px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 60px 30px; }
+  .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text2); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; color: var(--text3); margin-bottom: 24px; }
+  .btn-import { background: var(--accent); color: white; border: none; border-radius: 50px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+  /* ALERT */
+  .alert { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
+  .alert.show { opacity: 1; }
+
+  /* SETTINGS */
+  .settings-btn { position: fixed; bottom: 24px; right: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); cursor: pointer; font-size: 20px; z-index: 150; }
+
+  /* WARNING BADGE */
+  .badge-warning { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+  .count-badge { background: white; color: var(--text); border-radius: 50px; padding: 2px 7px; font-size: 10px; margin-left: 4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">KdC</div>
+    </div>
+    <button class="btn-add" onclick="openForm()">+ Contact</button>
+  </div>
+  <div class="search-bar">
+    <svg class="search-icon" width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Nom, bien, téléphone..." oninput="renderList()">
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters" id="filters">
+  <button class="filter-btn active" data-cat="tous" onclick="setFilter('tous')">Tous <span class="count-badge" id="cnt-tous" style="background:var(--accent);color:white;border-radius:50px;padding:1px 6px;font-size:10px;"></span></button>
+  <button class="filter-btn" data-cat="vendeur" onclick="setFilter('vendeur')">Vendeurs</button>
+  <button class="filter-btn" data-cat="acheteur" onclick="setFilter('acheteur')">Acheteurs</button>
+  <button class="filter-btn" data-cat="locataire" onclick="setFilter('locataire')">Locataires</button>
+  <button class="filter-btn" data-cat="agent" onclick="setFilter('agent')">Agents</button>
+  <button class="filter-btn" data-cat="prospect" onclick="setFilter('prospect')">Prospects</button>
+</div>
+
+<!-- CONTACT LIST -->
+<div class="contact-list" id="contactList"></div>
+
+<!-- SETTINGS BUTTON -->
+<button class="settings-btn" onclick="openSettings()">⚙️</button>
+
+<!-- ALERT -->
+<div class="alert" id="alert"></div>
+
+<!-- MODAL DETAIL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" id="detailContent"></div>
+</div>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="formTitle">Nouveau contact</span>
+      <button class="modal-close" onclick="closeForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label class="form-label">Nom complet *</label>
+        <input type="text" class="form-input" id="fNom" placeholder="Prénom Nom">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" id="fCat">
+            <option value="vendeur">Vendeur</option>
+            <option value="acheteur">Acheteur</option>
+            <option value="locataire">Locataire</option>
+            <option value="agent">Agent</option>
+            <option value="prospect">Prospect</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priorité</label>
+          <select class="form-select" id="fPrio">
+            <option value="haute">Haute</option>
+            <option value="normale" selected>Normale</option>
+            <option value="froid">Froid</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Téléphone (avec indicatif)</label>
+        <input type="tel" class="form-input" id="fTel" placeholder="+971 50 000 0000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="fEmail">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bien(s) / Projet</label>
+        <input type="text" class="form-input" id="fBien" placeholder="Ex: Seagate T3 U1008, 2BR, 1.9M AED">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prochain suivi</label>
+        <input type="date" class="form-input" id="fSuivi">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="fNotes" placeholder="Situation, contraintes, points clés..."></textarea>
+      </div>
+      <button class="btn-save" onclick="saveContact()">Enregistrer</button>
+      <button class="btn-cancel" onclick="closeForm()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SETTINGS -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">Paramètres</span>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Supabase URL</label>
+        <input type="text" class="form-input" id="sSupabaseUrl" placeholder="https://xxx.supabase.co">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Supabase Anon Key</label>
+        <input type="text" class="form-input" id="sSupabaseKey" placeholder="eyJhbGci...">
+      </div>
+      <button class="btn-save" onclick="saveSettings()" style="background:var(--gold);">Sauvegarder</button>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+        <button class="btn-save" onclick="exportCSV()" style="background:var(--blue);margin-bottom:10px;">📥 Exporter CSV</button>
+        <button class="btn-save" onclick="confirmImport()" style="background:var(--accent2);margin-bottom:10px;">📋 Importer contacts par défaut</button>
+        <button class="btn-save" onclick="confirmClear()" style="background:var(--red);">🗑 Effacer tous les contacts</button>
+      </div>
+      <button class="btn-cancel" onclick="closeSettings()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const DEFAULT_CONTACTS = [
+  { id: uid(), nom: "Trefor Murphy", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Seagate T3 U1008 – 2BR", suivi: "", notes: "Vendeur Seagate Tower 3, unité 1008. Contact direct.", alert: false },
+  { id: uid(), nom: "Mayank Dave", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Seagate U1406 – 2BR", suivi: "", notes: "Vendeur Seagate unité 1406.", alert: false },
+  { id: uid(), nom: "Daosheng", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Seagate + Elie Saab AR3 Villa", suivi: "", notes: "Vendeur multi-biens : Seagate + villa Elie Saab AR3.", alert: false },
+  { id: uid(), nom: "Abdul / Vikas", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Seagate – unité à confirmer", suivi: "", notes: "Vendeurs Seagate. Contacter pour confirmer unité exacte.", alert: false },
+  { id: uid(), nom: "Hassan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Binghatti Royale JVC U2306 + U2401 / Parkside 2 Dubai South", suivi: "", notes: "Vendeur : 2 unités Binghatti Royale JVC + villa Parkside 2 Dubai South. Listings actifs.", alert: false },
+  { id: uid(), nom: "Guillaume Merlin", cat: "vendeur", prio: "normale", tel: "", email: "", bien: "Dubai Hills Estate – Villa", suivi: "", notes: "Villa Dubai Hills Estate. Pipeline actif.", alert: false },
+  { id: uid(), nom: "Sanjeev Ranjan", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Beach Isle T1 U1703 – 2BR 103m² (achat 2.84M juin 2024)", suivi: "", notes: "Vendeur motivé. Basé à Sharjah. Géré via agent Sophy (Beach isle 1703 - 2BR Sophy). Bien acheté 2.84M en juin 2024.", alert: false },
+  { id: uid(), nom: "Sumit Kumar ⚠️", cat: "vendeur", prio: "haute", tel: "", email: "", bien: "Condor Marina Star + Apex JVC bulk (10 unités)", suivi: "", notes: "⚠️ APPROCHE AVEC EMPATHIE avant business. Problèmes de santé (cardiaque, rénal, cervical) depuis fév 2026. Basé à Oman. Vendeur motivé Condor Marina Star. Cherche aussi distress deals Palm/Creek (critères stricts). Bulk Apex JVC : 10 unités 1BR, max 1,000 AED/sqft, exit target 1.25M+20%.", alert: true },
+  { id: uid(), nom: "Carine Le Garrec", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Budget 8M AED – Marina Vista 3401 (closing effectué 4.5M)", suivi: "", notes: "Air France. Closing réalisé sur Marina Vista 3401 à 4.5M AED. Reste budget pour autre acquisition. Contact post-closing à entretenir.", alert: false },
+  { id: uid(), nom: "Alessio", cat: "acheteur", prio: "normale", tel: "", email: "", bien: "Beach Isle / Beach Mansion – 1BR, budget ~3M AED", suivi: "", notes: "Cherche 1BR Beach Isle ou Beach Mansion. Budget environ 3M AED.", alert: false },
+  { id: uid(), nom: "Majka", cat: "acheteur", prio: "haute", tel: "", email: "", bien: "Palm Shoreline F/D-type – off-market uniquement", suivi: "", notes: "Cherche Palm Shoreline type F ou D. Off-market UNIQUEMENT. Ne pas proposer de biens en publicité.", alert: false },
+  { id: uid(), nom: "Konstantin", cat: "acheteur", prio: "froid", tel: "", email: "", bien: "Ellington House DHE – 2BR, mortgage buyer", suivi: "", notes: "Voisin Beach Isle P406. Parti de Dubaï en mai. Dossier en attente. Acheteur mortgage, cible Ellington House 2BR DHE.", alert: false },
+  { id: uid(), nom: "Laura", cat: "prospect", prio: "haute", tel: "+41798602224", email: "", bien: "Club Place B1007 / Abu Dhabi TH 3–4M AED", suivi: "", notes: "Rappel début mai. Visite promoteur ~22–23 mai Dubaï. Intérêt Club Place B1007 + townhouse Abu Dhabi budget 3-4M.", alert: false },
+  { id: uid(), nom: "Guylain", cat: "prospect", prio: "normale", tel: "+33608969030", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. À recontacter et qualifier.", alert: false },
+  { id: uid(), nom: "Hugo / Carina", cat: "prospect", prio: "normale", tel: "+33664465511", email: "", bien: "À qualifier", suivi: "", notes: "Prospect France. À recontacter et qualifier.", alert: false },
+  { id: uid(), nom: "Adam", cat: "prospect", prio: "normale", tel: "+33615242707", email: "", bien: "Budget ~2.1M AED via Dina", suivi: "", notes: "Prospect France. Budget 2.1M AED environ. Lead via Dina.", alert: false },
+  { id: uid(), nom: "Carine Fergati", cat: "locataire", prio: "haute", tel: "+33686077830", email: "", bien: "3BR AR3 / Villanova – max 150K AED/an, arrivée août", suivi: "", notes: "Recontacter avril/mai. Cherche 3BR AR3 ou Villanova, max 150K AED/an. Arrivée août. École Georges Pompidou. Lead via Rachid Dadi.", alert: false },
+  { id: uid(), nom: "Elie Yves Cohen", cat: "locataire", prio: "normale", tel: "+212722149950", email: "", bien: "Dubai Marina 1BR meublé – sous-location/Airbnb, ~85K AED/an", suivi: "", notes: "ELY&CO MAROC. Présent 6 mois/an à Dubaï. Cherche 1BR meublé Dubai Marina ou Business Bay avec droits sous-location / Airbnb. Budget ~85K AED/an.", alert: false },
+];
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+let contacts = [];
+let currentFilter = 'tous';
+let editingId = null;
+
+// ===== STORAGE =====
+function load() {
+  try {
+    const raw = localStorage.getItem('kdc-crm-contacts');
+    contacts = raw ? JSON.parse(raw) : [];
+  } catch(e) { contacts = []; }
+}
+function save() {
+  localStorage.setItem('kdc-crm-contacts', JSON.stringify(contacts));
+}
+
+// ===== RENDER =====
+function catBadge(cat) {
+  const map = { vendeur:'Vendeur', acheteur:'Acheteur', locataire:'Locataire', agent:'Agent', prospect:'Prospect' };
+  return `<span class="badge badge-${cat}">${map[cat]||cat}</span>`;
+}
+function prioBadge(p) {
+  if(p==='haute') return `<span class="badge badge-haute">🔴 Urgent</span>`;
+  if(p==='froid') return `<span class="badge badge-froid">❄️ Froid</span>`;
+  return '';
+}
+function isUrgent(suivi) {
+  if(!suivi) return false;
+  const d = new Date(suivi);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return d <= today;
+}
+
+function renderList() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const list = document.getElementById('contactList');
+  
+  let filtered = contacts.filter(c => {
+    const matchCat = currentFilter === 'tous' || c.cat === currentFilter;
+    const matchQ = !q || c.nom.toLowerCase().includes(q) || (c.bien||'').toLowerCase().includes(q) || (c.tel||'').includes(q) || (c.notes||'').toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  // Sort: haute first, then by followup urgency
+  filtered.sort((a,b) => {
+    if(a.prio==='haute' && b.prio!=='haute') return -1;
+    if(b.prio==='haute' && a.prio!=='haute') return 1;
+    if(a.suivi && b.suivi) return new Date(a.suivi)-new Date(b.suivi);
+    if(a.suivi) return -1;
+    if(b.suivi) return 1;
+    return 0;
+  });
+
+  // Update count
+  document.getElementById('cnt-tous').textContent = contacts.length;
+
+  if(contacts.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <h3>Aucun contact</h3>
+      <p>Importez les 18 contacts par défaut<br>ou ajoutez-en un manuellement.</p>
+      <button class="btn-import" onclick="importDefaults()">📋 Importer les contacts</button>
+    </div>`;
+    return;
+  }
+  if(filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><h3>Aucun résultat</h3><p>Modifiez votre recherche.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(c => {
+    const tel = (c.tel||'').replace(/\s+/g,'');
+    const waLink = tel ? `href="https://wa.me/${tel.replace('+','')}"` : '';
+    const callLink = tel ? `href="tel:${tel}"` : '';
+    const followupTxt = c.suivi ? (isUrgent(c.suivi) ? `⚡ Suivi : ${fmtDate(c.suivi)}` : `📅 Suivi : ${fmtDate(c.suivi)}`) : '';
+    const notePreview = c.notes ? c.notes.replace(/⚠️/g,'').substring(0,70) + (c.notes.length>70?'…':'') : '';
+    return `<div class="contact-card" onclick="openDetail('${c.id}')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${c.nom}</div>
+          ${c.bien ? `<div class="card-property">${c.bien}</div>` : ''}
+        </div>
+      </div>
+      <div class="card-badges">
+        ${catBadge(c.cat)}
+        ${prioBadge(c.prio)}
+        ${c.alert ? '<span class="badge badge-warning">⚠️ Empathie</span>' : ''}
+      </div>
+      ${followupTxt ? `<div class="card-followup ${isUrgent(c.suivi)?'urgent':''}">${followupTxt}</div>` : ''}
+      ${notePreview ? `<div class="card-note-preview">${notePreview}</div>` : ''}
+      ${tel ? `<div class="card-actions">
+        ${waLink ? `<a class="card-action-btn wa" ${waLink} target="_blank" onclick="event.stopPropagation()">💬 WhatsApp</a>` : ''}
+        ${callLink ? `<a class="card-action-btn call" ${callLink} onclick="event.stopPropagation()">📞 Appeler</a>` : ''}
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function fmtDate(d) {
+  if(!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat===f));
+  renderList();
+}
+
+// ===== DETAIL MODAL =====
+function openDetail(id) {
+  const c = contacts.find(x=>x.id===id);
+  if(!c) return;
+  const tel = (c.tel||'').replace(/\s+/g,'');
+  const modal = document.getElementById('detailModal');
+  document.getElementById('detailContent').innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">${c.nom}</span>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="action-row">
+        ${tel ? `<a class="action-big wa" href="https://wa.me/${tel.replace('+','')}" target="_blank">💬 WA</a>` : ''}
+        ${tel ? `<a class="action-big call" href="tel:${tel}">📞 Appel</a>` : ''}
+        <button class="action-big edit" onclick="openEdit('${c.id}')">✏️ Modifier</button>
+      </div>
+      ${c.alert ? `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--text);">⚠️ <strong>Approche avec empathie</strong> — Engager la conversation personnelle avant le business.</div>` : ''}
+      <div class="detail-section">
+        <div class="detail-label">Catégorie</div>
+        <div>${catBadge(c.cat)} ${prioBadge(c.prio)}</div>
+      </div>
+      ${c.tel ? `<div class="detail-section"><div class="detail-label">Téléphone</div><div class="detail-value">${c.tel}</div></div>` : ''}
+      ${c.email ? `<div class="detail-section"><div class="detail-label">Email</div><div class="detail-value">${c.email}</div></div>` : ''}
+      ${c.bien ? `<div class="detail-section"><div class="detail-label">Bien / Projet</div><div class="detail-value">${c.bien}</div></div>` : ''}
+      ${c.suivi ? `<div class="detail-section"><div class="detail-label">Prochain suivi</div><div class="detail-value ${isUrgent(c.suivi)?'':''}">📅 ${fmtDate(c.suivi)}</div></div>` : ''}
+      ${c.notes ? `<div class="detail-section"><div class="detail-label">Notes</div><div class="detail-note">${c.notes.replace(/\n/g,'<br>')}</div></div>` : ''}
+      <button class="action-big del" style="width:100%;margin-top:16px;" onclick="deleteContact('${c.id}')">🗑 Supprimer</button>
+    </div>`;
+  modal.classList.add('open');
+}
+function closeDetail() { document.getElementById('detailModal').classList.remove('open'); }
+
+// ===== FORM =====
+function openForm() {
+  editingId = null;
+  document.getElementById('formTitle').textContent = 'Nouveau contact';
+  document.getElementById('editId').value = '';
+  ['fNom','fTel','fEmail','fBien','fNotes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('fCat').value = 'vendeur';
+  document.getElementById('fPrio').value = 'normale';
+  document.getElementById('fSuivi').value = '';
+  document.getElementById('formModal').classList.add('open');
+}
+function openEdit(id) {
+  const c = contacts.find(x=>x.id===id);
+  if(!c) return;
+  closeDetail();
+  editingId = id;
+  document.getElementById('formTitle').textContent = 'Modifier contact';
+  document.getElementById('editId').value = id;
+  document.getElementById('fNom').value = c.nom||'';
+  document.getElementById('fCat').value = c.cat||'vendeur';
+  document.getElementById('fPrio').value = c.prio||'normale';
+  document.getElementById('fTel').value = c.tel||'';
+  document.getElementById('fEmail').value = c.email||'';
+  document.getElementById('fBien').value = c.bien||'';
+  document.getElementById('fSuivi').value = c.suivi||'';
+  document.getElementById('fNotes').value = c.notes||'';
+  document.getElementById('formModal').classList.add('open');
+}
+function closeForm() { document.getElementById('formModal').classList.remove('open'); }
+
+function saveContact() {
+  const nom = document.getElementById('fNom').value.trim();
+  if(!nom) { showAlert('Le nom est obligatoire'); return; }
+  const id = document.getElementById('editId').value || uid();
+  const contact = {
+    id, nom,
+    cat: document.getElementById('fCat').value,
+    prio: document.getElementById('fPrio').value,
+    tel: document.getElementById('fTel').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    bien: document.getElementById('fBien').value.trim(),
+    suivi: document.getElementById('fSuivi').value,
+    notes: document.getElementById('fNotes').value.trim(),
+    alert: document.getElementById('fPrio').value === 'haute' && document.getElementById('fNotes').value.toLowerCase().includes('empathie')
+  };
+  const idx = contacts.findIndex(c=>c.id===id);
+  if(idx>=0) contacts[idx]=contact; else contacts.unshift(contact);
+  save();
+  closeForm();
+  renderList();
+  showAlert(idx>=0 ? 'Contact mis à jour' : 'Contact ajouté');
+}
+
+function deleteContact(id) {
+  if(!confirm('Supprimer ce contact ?')) return;
+  contacts = contacts.filter(c=>c.id!==id);
+  save();
+  closeDetail();
+  renderList();
+  showAlert('Contact supprimé');
+}
+
+// ===== IMPORT =====
+function importDefaults() {
+  contacts = JSON.parse(JSON.stringify(DEFAULT_CONTACTS)).map(c => ({...c, id: uid()}));
+  save();
+  renderList();
+  showAlert('18 contacts importés !');
+}
+function confirmImport() {
+  if(contacts.length > 0 && !confirm('Cela ajoutera les contacts par défaut à vos contacts existants. Continuer ?')) return;
+  const existing = new Set(contacts.map(c=>c.nom));
+  const toAdd = DEFAULT_CONTACTS.filter(c=>!existing.has(c.nom)).map(c=>({...c, id:uid()}));
+  contacts = [...contacts, ...toAdd];
+  save();
+  closeSettings();
+  renderList();
+  showAlert(`${toAdd.length} contacts importés`);
+}
+function confirmClear() {
+  if(!confirm('⚠️ Effacer TOUS les contacts ? Cette action est irréversible.')) return;
+  contacts = [];
+  save();
+  closeSettings();
+  renderList();
+  showAlert('Contacts effacés');
+}
+
+// ===== SETTINGS =====
+function openSettings() {
+  const url = localStorage.getItem('kdc-supabase-url')||'';
+  const key = localStorage.getItem('kdc-supabase-key')||'';
+  document.getElementById('sSupabaseUrl').value = url;
+  document.getElementById('sSupabaseKey').value = key;
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function saveSettings() {
+  localStorage.setItem('kdc-supabase-url', document.getElementById('sSupabaseUrl').value.trim());
+  localStorage.setItem('kdc-supabase-key', document.getElementById('sSupabaseKey').value.trim());
+  closeSettings();
+  showAlert('Paramètres sauvegardés');
+}
+
+// ===== EXPORT =====
+function exportCSV() {
+  const headers = ['Nom','Catégorie','Priorité','Téléphone','Email','Bien','Suivi','Notes'];
+  const rows = contacts.map(c => [c.nom,c.cat,c.prio,c.tel,c.email,c.bien,c.suivi,c.notes].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
+  const csv = [headers.join(','), ...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='kdc-crm.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===== ALERT =====
+function showAlert(msg) {
+  const el = document.getElementById('alert');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+// Close modals on overlay tap
+document.getElementById('detailModal').addEventListener('click', function(e){ if(e.target===this) closeDetail(); });
+document.getElementById('formModal').addEventListener('click', function(e){ if(e.target===this) closeForm(); });
+document.getElementById('settingsModal').addEventListener('click', function(e){ if(e.target===this) closeSettings(); });
+
+// ===== INIT =====
+load();
+renderList();
+</script>
+</body>
+</html>
