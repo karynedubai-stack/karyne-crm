@@ -290,15 +290,50 @@ let contacts = [];
 let currentFilter = 'tous';
 let editingId = null;
 
+// ===== SUPABASE =====
+const SB_URL = 'https://gjmcepexmwhdomvxftmk.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqbWNlcGV4bXdoZG9tdnhmdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNTY3MzQsImV4cCI6MjA5MTczMjczNH0.ZhwXXGynXIAIK_3XjQrZipdwW2gY_tuyaQehD7DP2d4';
+const SB_HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+
+function sbToLocal(r) {
+  return { id: String(r.id), nom: r.name||'', cat: r.type||'vendeur', prio: r.prio||'normale', tel: r.phone||'', email: r.email||'', bien: r.property||'', suivi: r.suivi||'', notes: r.notes||'', alert: r.alert||false };
+}
+function localToSb(c) {
+  return { name: c.nom, type: c.cat, prio: c.prio, phone: c.tel, email: c.email, property: c.bien, suivi: c.suivi, notes: c.notes, alert: c.alert||false };
+}
+
 // ===== STORAGE =====
-function load() {
+async function load() {
   try {
+    const res = await fetch(`${SB_URL}/rest/v1/contacts?select=*&order=id.asc`, { headers: SB_HEADERS });
+    const data = await res.json();
+    contacts = Array.isArray(data) ? data.map(sbToLocal) : [];
+    localStorage.setItem('kdc-crm-contacts', JSON.stringify(contacts));
+  } catch(e) {
     const raw = localStorage.getItem('kdc-crm-contacts');
     contacts = raw ? JSON.parse(raw) : [];
-  } catch(e) { contacts = []; }
+  }
+  renderList();
 }
+
 function save() {
   localStorage.setItem('kdc-crm-contacts', JSON.stringify(contacts));
+}
+
+async function sbSave(contact) {
+  const payload = localToSb(contact);
+  const isNumericId = !isNaN(contact.id);
+  if (isNumericId) {
+    await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${contact.id}`, { method: 'PATCH', headers: SB_HEADERS, body: JSON.stringify(payload) });
+  } else {
+    const res = await fetch(`${SB_URL}/rest/v1/contacts`, { method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (data && data[0]) contact.id = String(data[0].id);
+  }
+}
+
+async function sbDelete(id) {
+  if (!isNaN(id)) await fetch(`${SB_URL}/rest/v1/contacts?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
 }
 
 // ===== RENDER =====
@@ -479,6 +514,7 @@ function saveContact() {
   closeForm();
   renderList();
   showAlert(idx>=0 ? 'Contact mis à jour' : 'Contact ajouté');
+  sbSave(contact);
 }
 
 function deleteContact(id) {
@@ -488,6 +524,7 @@ function deleteContact(id) {
   closeDetail();
   renderList();
   showAlert('Contact supprimé');
+  sbDelete(id);
 }
 
 // ===== IMPORT =====
@@ -558,7 +595,6 @@ document.getElementById('settingsModal').addEventListener('click', function(e){ 
 
 // ===== INIT =====
 load();
-renderList();
 </script>
 </body>
 </html>
